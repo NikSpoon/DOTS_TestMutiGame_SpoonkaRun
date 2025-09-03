@@ -3,46 +3,47 @@ using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
 
-public struct PlayerInput : IInputComponentData
+public struct CubeInput : IInputComponentData
 {
     public int Horizontal;
     public int Vertical;
 }
 
 [DisallowMultipleComponent]
-public class PlayerInputAuthoring : MonoBehaviour
+public class CubeInputAuthoring : MonoBehaviour
 {
-    class PlayerInputBaking : Baker<PlayerInputAuthoring>
+    class CubeInputBaking : Unity.Entities.Baker<CubeInputAuthoring>
     {
-        public override void Bake(PlayerInputAuthoring authoring)
+        public override void Bake(CubeInputAuthoring authoring)
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent<PlayerInput>(entity);
+            AddComponent<CubeInput>(entity);
         }
     }
 }
 
 [UpdateInGroup(typeof(GhostInputSystemGroup))]
-public partial struct SamplePalyerInput : ISystem
+public partial struct SampleCubeInput : ISystem
 {
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<NetworkStreamInGame>();
-        state.RequireForUpdate<PlayerInputAuthoring>();
+        state.RequireForUpdate<CubeSpawner>();
     }
 
     public void OnUpdate(ref SystemState state)
     {
-        foreach (var playerInput in SystemAPI.Query<RefRW<PlayerInput>>().WithAll<GhostOwnerIsLocal>())
+        foreach (var playerInput in SystemAPI.Query<RefRW<CubeInput>>().WithAll<GhostOwnerIsLocal>())
         {
+           
             playerInput.ValueRW = default;
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKey("left"))
                 playerInput.ValueRW.Horizontal -= 1;
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey("right"))
                 playerInput.ValueRW.Horizontal += 1;
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetKey("down"))
                 playerInput.ValueRW.Vertical -= 1;
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey("up"))
                 playerInput.ValueRW.Vertical += 1;
         }
     }

@@ -35,7 +35,7 @@ public partial struct GoInGameClientSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         // Run only on entities with a CubeSpawner component data
-        state.RequireForUpdate<PlayerSpawner>();
+        state.RequireForUpdate<CubeSpawner>();
 
         var builder = new EntityQueryBuilder(Allocator.Temp)
             .WithAll<NetworkId>()
@@ -68,7 +68,7 @@ public partial struct GoInGameServerSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<PlayerSpawner>();
+        state.RequireForUpdate<CubeSpawner>();
 
         var builder = new EntityQueryBuilder(Allocator.Temp)
             .WithAll<GoInGameRequest>()
@@ -76,12 +76,11 @@ public partial struct GoInGameServerSystem : ISystem
         state.RequireForUpdate(state.GetEntityQuery(builder));
         networkIdFromEntity = state.GetComponentLookup<NetworkId>(true);
     }
-
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         // Get the prefab to instantiate
-        var prefab = SystemAPI.GetSingleton<PlayerSpawner>().PalyerEntity;
+        var prefab = SystemAPI.GetSingleton<CubeSpawner>().Cube;
 
         // Ge the name of the prefab being instantiated
         state.EntityManager.GetName(prefab, out var prefabName);
