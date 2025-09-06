@@ -37,13 +37,13 @@ public partial struct SampleCubeInput : ISystem
         {
            
             playerInput.ValueRW = default;
-            if (Input.GetKey("left"))
+            if (Input.GetKey(KeyCode.A))
                 playerInput.ValueRW.Horizontal -= 1;
-            if (Input.GetKey("right"))
+            if (Input.GetKey(KeyCode.D))
                 playerInput.ValueRW.Horizontal += 1;
-            if (Input.GetKey("down"))
+            if (Input.GetKey(KeyCode.S))
                 playerInput.ValueRW.Vertical -= 1;
-            if (Input.GetKey("up"))
+            if (Input.GetKey(KeyCode.W))
                 playerInput.ValueRW.Vertical += 1;
         }
     }
