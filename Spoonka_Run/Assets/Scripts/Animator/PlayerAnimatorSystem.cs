@@ -2,6 +2,7 @@
 using Unity.Entities;
 using Unity.Collections;
 using UnityEngine;
+using Unity.Transforms;
 
 [UpdateInGroup(typeof(PresentationSystemGroup), OrderFirst = true)]
 partial struct PlayerAnimatorSystem : ISystem
@@ -27,6 +28,15 @@ partial struct PlayerAnimatorSystem : ISystem
             };
 
             ecb.AddComponent(entity, newAnimatorReferense);
+        }
+
+        foreach (var (trasform, animatorReferense, moveState ) 
+            in 
+            SystemAPI.Query<LocalTransform, PayerAnimatorReference, MoveState>())
+        {
+            animatorReferense.Value.SetBool("IsMoving", moveState .IsMoving);
+            animatorReferense.Value.transform.position = trasform.Position;
+            animatorReferense.Value.transform.rotation = trasform.Rotation;
         }
 
         ecb.Playback(state.EntityManager);
